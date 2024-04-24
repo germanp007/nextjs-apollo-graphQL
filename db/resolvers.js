@@ -19,12 +19,16 @@ const cursos = [
 
 // RESOLVERS
 export const resolvers = {
+  //   Query: {
+  //     obtenerCursos: (_, { input }, ctx) => {
+  //       const resultado = cursos.filter(
+  //         (curso) => curso.tecnologia === input.tecnologia
+  //       );
+  //       return resultado;
+  //     },
+  //     obtenerTecnologia: () => cursos,
+  //   },
   Query: {
-    obtenerCursos: (_, { input }, ctx) => {
-      const resultado = cursos.filter(
-        (curso) => curso.tecnologia === input.tecnologia
-      );
-      return resultado;
-    },
+    obtenerCursos: () => "algo",
   },
 };
