@@ -1,0 +1,19 @@
+{
+  "name": "crmgraphqlcurso",
+  "version": "1.0.0",
+  "description": "curso de graphql nextjs",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon ."
+  },
+  "author": "German Pinto",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
