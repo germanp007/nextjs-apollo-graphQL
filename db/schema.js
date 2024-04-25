@@ -33,6 +33,6 @@ export const typeDefs = gql`
     obtenerCursos: String
   }
   type Mutation {
-    nuevoUsuario(input: UsuarioInput): String
+    nuevoUsuario(input: UsuarioInput): Usuario
   }
 `;
