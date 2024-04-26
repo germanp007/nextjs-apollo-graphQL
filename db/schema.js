@@ -16,6 +16,13 @@ Cuando el dato tiene un ! ej: String! es obligatorio o required
 */
 
 export const typeDefs = gql`
+  type Token {
+    token: String
+  }
+  input AutenticarInput {
+    email: String!
+    password: String!
+  }
   type Usuario {
     id: ID
     nombre: String
@@ -34,5 +41,6 @@ export const typeDefs = gql`
   }
   type Mutation {
     nuevoUsuario(input: UsuarioInput): Usuario
+    autenticarUsuario(input: AutenticarInput): Token
   }
 `;
