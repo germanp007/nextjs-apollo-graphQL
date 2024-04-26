@@ -1,6 +1,7 @@
 import Usuario from "../models/Usuario.js";
-
+import bcryptjs from "bcryptjs";
 // RESOLVERS
+
 export const resolvers = {
   //   Query: {
   //     obtenerCursos: (_, { input }, ctx) => {
@@ -15,21 +16,26 @@ export const resolvers = {
     obtenerCursos: () => "algo",
   },
   Mutation: {
-    nuevoUsuario: async (_, input) => {
+    nuevoUsuario: async (_, { input }) => {
       const { email, password } = input;
 
       // Revisar si el usuario esta registrado
-      try {
-        const existeUsuario = await Usuario.findOne({ email });
-        if (existeUsuario) {
-          throw new Error("Usuario ya existe");
-        }
-        // Hashear el password
-        // Guardar en la base de Datos
 
+      const existeUsuario = await Usuario.findOne({ email });
+
+      if (existeUsuario) {
+        throw new Error("Usuario ya existe");
+      }
+      // Hashear el password
+
+      const salt = await bcryptjs.genSalt(10);
+      input.password = await bcryptjs.hash(password, salt); // agregar el hash al obj input
+
+      // Guardar en la base de Datos
+      try {
         const usuario = new Usuario(input);
-        usuario.save();
-        return usuario;
+        const respuesta = await usuario.save();
+        return respuesta;
       } catch (error) {
         console.log(error);
       }
