@@ -1,7 +1,15 @@
 import Usuario from "../models/Usuario.js";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config({ path: "variables.env" });
 // RESOLVERS
 
+const crearToken = (usuario, secret, expiresIn) => {
+  const { id, email, nombre, apellido } = usuario;
+  return jwt.sign({ id }, secret, { expiresIn });
+};
 export const resolvers = {
   //   Query: {
   //     obtenerCursos: (_, { input }, ctx) => {
@@ -45,13 +53,23 @@ export const resolvers = {
 
       const usuarioExiste = await Usuario.findOne({ email });
       // revisar si existe el usuario
-      if (!usuarioExiste) {
-        throw new Error("El usuario no existe");
-      }
-
-      //revisar si el password es correcto
-      //crear el token
       try {
+        if (!usuarioExiste) {
+          throw new Error("El usuario no existe");
+        }
+
+        //revisar si el password es correcto
+        const passwordCorrecto = await bcryptjs.compare(
+          password,
+          usuarioExiste.password
+        );
+        if (!passwordCorrecto) {
+          throw new Error("Password incorrecto");
+        }
+        //crear el token
+        return {
+          token: crearToken(usuarioExiste, process.env.SECRET_WORD, "24h"),
+        };
       } catch (error) {
         console.log(error);
       }
