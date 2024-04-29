@@ -107,5 +107,17 @@ export const resolvers = {
         console.log(error);
       }
     },
+    actualizarProducto: async (_, { id, input }) => {
+      // Revisar si el producto existe
+      let product = await Producto.findOne({ _id: id });
+      if (!product) {
+        throw new Error("No se encontró el producto");
+      }
+      // Actualizar el producto en la BD
+      product = await Producto.findOneAndUpdate({ _id: id }, input, {
+        new: true,
+      });
+      return product;
+    },
   },
 };
