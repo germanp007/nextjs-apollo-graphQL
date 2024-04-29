@@ -37,7 +37,7 @@ export const typeDefs = gql`
     password: String!
   }
   type Query {
-    obtenerCursos: String
+    obtenerUsuario(token: String!): Usuario
   }
   type Mutation {
     nuevoUsuario(input: UsuarioInput): Usuario

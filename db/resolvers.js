@@ -8,7 +8,7 @@ dotenv.config({ path: "variables.env" });
 
 const crearToken = (usuario, secret, expiresIn) => {
   const { id, email, nombre, apellido } = usuario;
-  return jwt.sign({ id }, secret, { expiresIn });
+  return jwt.sign({ id, email, nombre, apellido }, secret, { expiresIn });
 };
 export const resolvers = {
   //   Query: {
@@ -21,9 +21,13 @@ export const resolvers = {
   //     obtenerTecnologia: () => cursos,
   //   },
   Query: {
-    obtenerCursos: () => "algo",
+    obtenerUsuario: async (_, { token }) => {
+      const usuarioId = await jwt.verify(token, process.env.SECRET_WORD);
+      return usuarioId;
+    },
   },
   Mutation: {
+    // Para crear Usuario agregar hash y guardar en la BD
     nuevoUsuario: async (_, { input }) => {
       const { email, password } = input;
 
@@ -48,6 +52,7 @@ export const resolvers = {
         console.log(error);
       }
     },
+    // Para autenticarlo con JWT y comparar el Hash
     autenticarUsuario: async (_, { input }) => {
       const { email, password } = input;
 
