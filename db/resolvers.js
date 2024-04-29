@@ -1,4 +1,5 @@
 import Usuario from "../models/Usuario.js";
+import Producto from "../models/Producto.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -24,6 +25,22 @@ export const resolvers = {
     obtenerUsuario: async (_, { token }) => {
       const usuarioId = await jwt.verify(token, process.env.SECRET_WORD);
       return usuarioId;
+    },
+    obtenerProductos: async () => {
+      try {
+        const productos = await Producto.find({});
+        return productos;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    obtenerProducto: async (_, { id }) => {
+      const producto = await Producto.findById(id);
+      if (!producto) {
+        throw new Error("Producto no encontrado");
+      }
+
+      return producto;
     },
   },
   Mutation: {
@@ -75,6 +92,17 @@ export const resolvers = {
         return {
           token: crearToken(usuarioExiste, process.env.SECRET_WORD, "24h"),
         };
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    // Productos
+    nuevoProducto: async (_, { input }) => {
+      try {
+        const producto = new Producto(input);
+        const nuevoProducto = await producto.save();
+        return nuevoProducto;
       } catch (error) {
         console.log(error);
       }
