@@ -73,6 +73,9 @@ export const typeDefs = gql`
     # Productos
     obtenerProductos: [Producto]
     obtenerProducto(id: ID!): Producto
+    # Clientes
+    obtenerClientes: [Cliente]
+    obtenerClienteVendedor: [Cliente]
   }
   type Mutation {
     # Usuarios

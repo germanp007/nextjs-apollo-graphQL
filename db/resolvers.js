@@ -43,6 +43,24 @@ export const resolvers = {
 
       return producto;
     },
+    obtenerClientes: async () => {
+      try {
+        const clientes = await Cliente.find({});
+        return clientes;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    obtenerClienteVendedor: async (_, {}, ctx) => {
+      try {
+        const clientes = await Cliente.find({
+          vendedor: ctx.usuario.id.toString(),
+        });
+        return clientes;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   Mutation: {
     // Para crear Usuario agregar hash y guardar en la BD
@@ -131,8 +149,9 @@ export const resolvers = {
     },
 
     // Clientes
-    nuevoCliente: async (_, { input }) => {
+    nuevoCliente: async (_, { input }, ctx) => {
       //Verificar si el cliente ya esta registrado
+      console.log(ctx);
       const { email } = input;
       const cliente = await Cliente.findOne({ email });
       if (cliente) {
@@ -140,10 +159,10 @@ export const resolvers = {
       }
       const nuevoCliente = new Cliente(input);
       //Asignar el vendedor
-      nuevoCliente.vendedor = "662c0d2b9c8584c02fbac448";
-      // Guardar en la base de datos
+      nuevoCliente.vendedor = ctx.usuario.id;
 
       try {
+        // Guardar en la base de datos
         const result = await nuevoCliente.save();
         return result;
       } catch (error) {
