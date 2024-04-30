@@ -1,5 +1,6 @@
 import Usuario from "../models/Usuario.js";
 import Producto from "../models/Producto.js";
+import Cliente from "../models/Clientes.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -127,6 +128,27 @@ export const resolvers = {
       }
       await Producto.findOneAndDelete({ _id: id });
       return "Producto Eliminado";
+    },
+
+    // Clientes
+    nuevoCliente: async (_, { input }) => {
+      //Verificar si el cliente ya esta registrado
+      const { email } = input;
+      const cliente = await Cliente.findOne({ email });
+      if (cliente) {
+        throw new Error("Usuario existente");
+      }
+      const nuevoCliente = new Cliente(input);
+      //Asignar el vendedor
+      nuevoCliente.vendedor = "662c0d2b9c8584c02fbac448";
+      // Guardar en la base de datos
+
+      try {
+        const result = await nuevoCliente.save();
+        return result;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };
