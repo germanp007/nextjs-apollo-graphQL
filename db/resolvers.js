@@ -61,6 +61,21 @@ export const resolvers = {
         console.log(error);
       }
     },
+    obtenerCliente: async (_, { id }, ctx) => {
+      //revisar si el cliente existe
+
+      const cliente = await Cliente.findById(id);
+
+      if (!cliente) {
+        throw new Error("No se ha encontrado");
+      }
+      // Quien lo creo puede verlo
+      if (cliente.vendedor.toString() !== ctx.usuario.id) {
+        throw new Error("No tienes las credenciales");
+      }
+
+      return cliente;
+    },
   },
   Mutation: {
     // Para crear Usuario agregar hash y guardar en la BD
@@ -168,6 +183,23 @@ export const resolvers = {
       } catch (error) {
         console.log(error);
       }
+    },
+    actualizarCliente: async (_, { id, input }, ctx) => {
+      // Verificar si existe o no
+      let cliente = await Cliente.findById(id);
+      if (!cliente) {
+        throw new Error("Ese cliente no existe");
+      }
+      // Verificar si el vendedor es quien edita
+
+      if (cliente.vendedor.toString() !== ctx.usuario._id) {
+        throw new Error("No tienes las credenciales");
+      }
+      // Guardar actualizaciones
+      cliente = await Cliente.findByIdAndUpdate({ _id: id }, input, {
+        new: true,
+      });
+      return cliente;
     },
   },
 };

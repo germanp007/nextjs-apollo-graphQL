@@ -76,6 +76,7 @@ export const typeDefs = gql`
     # Clientes
     obtenerClientes: [Cliente]
     obtenerClienteVendedor: [Cliente]
+    obtenerCliente(id: ID!): Cliente
   }
   type Mutation {
     # Usuarios
@@ -89,5 +90,6 @@ export const typeDefs = gql`
 
     # Clientes
     nuevoCliente(input: ClienteInput): Cliente
+    actualizarCliente(id: ID!, input: ClienteInput): Cliente
   }
 `;
