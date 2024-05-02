@@ -191,8 +191,9 @@ export const resolvers = {
         throw new Error("Ese cliente no existe");
       }
       // Verificar si el vendedor es quien edita
-
-      if (cliente.vendedor.toString() !== ctx.usuario._id) {
+      // console.log(ctx.usuario.id);
+      console.log(cliente.vendedor.toString() === ctx.usuario.id);
+      if (cliente.vendedor.toString() !== ctx.usuario.id) {
         throw new Error("No tienes las credenciales");
       }
       // Guardar actualizaciones
