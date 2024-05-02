@@ -202,5 +202,13 @@ export const resolvers = {
       });
       return cliente;
     },
+    eliminarCliente: async (_, { id }, ctx) => {
+      const cliente = await Cliente.findByIdAndDelete(id);
+
+      if (cliente.vendedor.toString() !== ctx.usuario.id) {
+        throw new Error("No tienes las credenciales para ejecutar esta accion");
+      }
+      return "Cliente Eliminado";
+    },
   },
 };
