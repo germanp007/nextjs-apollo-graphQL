@@ -13,15 +13,6 @@ const crearToken = (usuario, secret, expiresIn) => {
   return jwt.sign({ id, email, nombre, apellido }, secret, { expiresIn });
 };
 export const resolvers = {
-  //   Query: {
-  //     obtenerCursos: (_, { input }, ctx) => {
-  //       const resultado = cursos.filter(
-  //         (curso) => curso.tecnologia === input.tecnologia
-  //       );
-  //       return resultado;
-  //     },
-  //     obtenerTecnologia: () => cursos,
-  //   },
   Query: {
     obtenerUsuario: async (_, { token }) => {
       const usuarioId = await jwt.verify(token, process.env.SECRET_WORD);
@@ -166,7 +157,7 @@ export const resolvers = {
     // Clientes
     nuevoCliente: async (_, { input }, ctx) => {
       //Verificar si el cliente ya esta registrado
-      console.log(ctx);
+
       const { email } = input;
       const cliente = await Cliente.findOne({ email });
       if (cliente) {
