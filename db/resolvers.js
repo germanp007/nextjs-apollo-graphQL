@@ -5,6 +5,7 @@ import Pedido from "../models/Pedidos.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import Pedidos from "../models/Pedidos.js";
 
 dotenv.config({ path: "variables.env" });
 // RESOLVERS
@@ -67,6 +68,34 @@ export const resolvers = {
       }
 
       return cliente;
+    },
+    obtenerPedidos: async (_, { id }, ctx) => {
+      try {
+        const pedidos = await Pedidos.find({});
+        return pedidos;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    obtenerPedidosVendedor: async (_, {}, ctx) => {
+      try {
+        const pedidos = await Pedidos.find({ vendedor: ctx.usuario.id });
+        return pedidos;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    obtenerPedido: async (_, { id }, ctx) => {
+      // verificar si el pedido existe
+      const pedido = await Pedidos.findById(id);
+      if (!pedido) {
+        throw new Error("El pedido no existe");
+      }
+      // verificar quien lo creo
+      if (pedido.vendedor.toString() !== ctx.usuario.id) {
+        throw new Error("No estás autorizado a realizar esta acción");
+      }
+      return pedido;
     },
   },
   Mutation: {
@@ -235,6 +264,42 @@ export const resolvers = {
       // Guardar BD
       const result = nuevoPedido.save();
       return result;
+    },
+    actualizarPedido: async (_, { id, input }, ctx) => {
+      const { cliente } = input;
+      //verificar si el pedido existe
+      const pedidoEncontrado = await Pedido.findById(id);
+      if (!pedidoEncontrado) {
+        throw new Error("Este pedido no se encuentra registrado");
+      }
+      // verificar si el cliente existe
+      const existeCliente = await Cliente.findById(cliente);
+      if (!existeCliente) {
+        throw new Error("el Cliente no existe");
+      }
+      // si el cliente y el pedido pertenecen al vendedor
+      if (existeCliente.vendedor.toString() !== ctx.usuario.id) {
+        throw new Error("No tienes las credenciales");
+      }
+      // revisar stock
+      for await (const art of input.pedido) {
+        const { id } = art;
+        const producto = await Producto.findById(id);
+        if (art.cantidad > producto.existencia) {
+          throw new Error(
+            `El articulo ${producto.nombre} excede la cantidad en Stock disponible`
+          );
+        } else {
+          // Restar el estado disponible
+          producto.existencia = producto.existencia - art.cantidad;
+          await producto.save();
+        }
+      }
+      // guardar pedido
+      const resultado = await Pedido.findOneAndUpdate({ _id: id }, input, {
+        new: true,
+      });
+      return resultado;
     },
   },
 };
