@@ -1,6 +1,7 @@
 import Usuario from "../models/Usuario.js";
 import Producto from "../models/Producto.js";
 import Cliente from "../models/Clientes.js";
+import Pedido from "../models/Pedidos.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -200,6 +201,40 @@ export const resolvers = {
         throw new Error("No tienes las credenciales para ejecutar esta accion");
       }
       return "Cliente Eliminado";
+    },
+    nuevoPedido: async (_, { input }, ctx) => {
+      //Verificar si cliente existe
+      const { cliente } = input;
+      let clienteExiste = await Cliente.findById(cliente);
+      if (!clienteExiste) {
+        throw new Error("Cliente no existe");
+      }
+      // verificar si cliente es del vendedor
+
+      if (clienteExiste.vendedor.toString() !== ctx.usuario.id) {
+        throw new Error("No tienes las credenciales");
+      }
+      // Revisar q stock este disponible
+      for await (const art of input.pedido) {
+        const { id } = art;
+        const producto = await Producto.findById(id);
+        if (art.cantidad > producto.existencia) {
+          throw new Error(
+            `El articulo ${producto.nombre} excede la cantidad en Stock disponible`
+          );
+        } else {
+          // Restar el estado disponible
+          producto.existencia = producto.existencia - art.cantidad;
+          await producto.save();
+        }
+      }
+      // Crear un nuevo pedido
+      const nuevoPedido = new Pedido(input);
+      // Asignar un vendedor
+      nuevoPedido.vendedor = ctx.usuario.id;
+      // Guardar BD
+      const result = nuevoPedido.save();
+      return result;
     },
   },
 };
