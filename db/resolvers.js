@@ -282,19 +282,22 @@ export const resolvers = {
         throw new Error("No tienes las credenciales");
       }
       // revisar stock
-      for await (const art of input.pedido) {
-        const { id } = art;
-        const producto = await Producto.findById(id);
-        if (art.cantidad > producto.existencia) {
-          throw new Error(
-            `El articulo ${producto.nombre} excede la cantidad en Stock disponible`
-          );
-        } else {
-          // Restar el estado disponible
-          producto.existencia = producto.existencia - art.cantidad;
-          await producto.save();
+      if (input.pedido) {
+        for await (const art of input.pedido) {
+          const { id } = art;
+          const producto = await Producto.findById(id);
+          if (art.cantidad > producto.existencia) {
+            throw new Error(
+              `El articulo ${producto.nombre} excede la cantidad en Stock disponible`
+            );
+          } else {
+            // Restar el estado disponible
+            producto.existencia = producto.existencia - art.cantidad;
+            await producto.save();
+          }
         }
       }
+
       // guardar pedido
       const resultado = await Pedido.findOneAndUpdate({ _id: id }, input, {
         new: true,
