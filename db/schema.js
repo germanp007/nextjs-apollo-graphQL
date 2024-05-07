@@ -33,6 +33,7 @@ export const typeDefs = gql`
     total: Float
     cliente: [Cliente]
   }
+
   type Usuario {
     id: ID
     nombre: String
