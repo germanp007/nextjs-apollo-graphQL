@@ -29,6 +29,10 @@ export const typeDefs = gql`
     telefono: String
     vendedor: ID
   }
+  type TopClientes {
+    total: Float
+    cliente: [Cliente]
+  }
   type Usuario {
     id: ID
     nombre: String
@@ -109,6 +113,9 @@ export const typeDefs = gql`
     obtenerPedidos: [Pedido]
     obtenerPedidosVendedor: [Pedido]
     obtenerPedido(id: ID!): Pedido
+    obtenerPedidosEstado(estado: String!): [Pedido]
+    # Busquedas Avanzadas
+    mejoresClientes: [TopClientes]
   }
   type Mutation {
     # Usuarios
@@ -128,5 +135,6 @@ export const typeDefs = gql`
     # Pedidos
     nuevoPedido(input: PedidoInput): Pedido
     actualizarPedido(id: ID!, input: PedidoInput): Pedido
+    eliminarPedido(id: ID!): String
   }
 `;

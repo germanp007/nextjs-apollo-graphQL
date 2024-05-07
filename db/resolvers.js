@@ -97,6 +97,38 @@ export const resolvers = {
       }
       return pedido;
     },
+    obtenerPedidosEstado: async (_, { estado }, ctx) => {
+      const pedidos = await Pedido.find({
+        vendedor: ctx.usuario.id,
+        estado: estado,
+      });
+      console.log(pedidos);
+
+      return pedidos;
+    },
+    mejoresClientes: async () => {
+      const clientes = await Pedido.aggregate([
+        { $match: { estado: "COMPLETADO" } },
+        {
+          $group: {
+            _id: "$cliente",
+            total: { $sum: "$total" },
+          },
+        },
+        {
+          $lookup: {
+            from: "clientes",
+            localField: "_id",
+            foreignField: "_id",
+            as: "cliente",
+          },
+        },
+        {
+          $sort: { total: -1 },
+        },
+      ]);
+      return clientes;
+    },
   },
   Mutation: {
     // Para crear Usuario agregar hash y guardar en la BD
@@ -303,6 +335,21 @@ export const resolvers = {
         new: true,
       });
       return resultado;
+    },
+    eliminarPedido: async (_, { id }, ctx) => {
+      // Verificar si el pedido existe
+      const pedidoExiste = await Pedido.findById(id);
+
+      if (!pedidoExiste) {
+        throw new Error("El pedido no esta registrado en el sistema");
+      }
+      // Verificar si el vendedor es el asignado
+      if (pedidoExiste.vendedor.toString() !== ctx.usuario.id) {
+        throw new Error("No tienes las credenciales para realizar esta accion");
+      }
+      // Eliminar el pedido
+      await Pedido.deleteOne({ _id: id });
+      return "Se ha eliminado correctamente";
     },
   },
 };
