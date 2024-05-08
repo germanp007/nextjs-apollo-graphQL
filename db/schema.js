@@ -20,6 +20,7 @@ export const typeDefs = gql`
   type Token {
     token: String
   }
+
   type Cliente {
     id: ID
     nombre: String
@@ -29,11 +30,16 @@ export const typeDefs = gql`
     telefono: String
     vendedor: ID
   }
+
   type TopClientes {
     total: Float
     cliente: [Cliente]
   }
 
+  type TopVendedores {
+    total: Float
+    vendedor: [Usuario]
+  }
   type Usuario {
     id: ID
     nombre: String
@@ -41,6 +47,7 @@ export const typeDefs = gql`
     email: String
     creado: String
   }
+
   type Producto {
     id: ID
     nombre: String
@@ -48,6 +55,7 @@ export const typeDefs = gql`
     precio: Float
     creado: String
   }
+
   type Pedido {
     id: ID
     pedido: [PedidoGroup]
@@ -57,10 +65,12 @@ export const typeDefs = gql`
     fecha: String
     estado: EstadoPedido
   }
+
   type PedidoGroup {
     id: ID
     cantidad: Int
   }
+
   input ClienteInput {
     nombre: String!
     apellido: String!
@@ -68,10 +78,12 @@ export const typeDefs = gql`
     email: String!
     telefono: String!
   }
+
   input AutenticarInput {
     email: String!
     password: String!
   }
+
   input UsuarioInput {
     nombre: String!
     apellido: String!
@@ -84,16 +96,19 @@ export const typeDefs = gql`
     existencia: Int!
     precio: Float!
   }
+
   input PedidoProductoInput {
     id: ID
     cantidad: Int
   }
+
   input PedidoInput {
     pedido: [PedidoProductoInput]
     total: Float!
     cliente: ID!
     estado: EstadoPedido
   }
+
   enum EstadoPedido {
     PENDIENTE
     COMPLETADO
@@ -102,21 +117,32 @@ export const typeDefs = gql`
 
   type Query {
     # Usuarios
+
     obtenerUsuario(token: String!): Usuario
+
     # Productos
+
     obtenerProductos: [Producto]
     obtenerProducto(id: ID!): Producto
+
     # Clientes
+
     obtenerClientes: [Cliente]
     obtenerClienteVendedor: [Cliente]
     obtenerCliente(id: ID!): Cliente
+
     # Pedidos
+
     obtenerPedidos: [Pedido]
     obtenerPedidosVendedor: [Pedido]
     obtenerPedido(id: ID!): Pedido
     obtenerPedidosEstado(estado: String!): [Pedido]
+
     # Busquedas Avanzadas
+
     mejoresClientes: [TopClientes]
+    mejoresVendedores: [TopVendedores]
+    buscarProducto: (texto:String!): [Producto]
   }
   type Mutation {
     # Usuarios
