@@ -30,5 +30,4 @@ const PedidoSchema = mongoose.Schema({
 });
 
 const Pedidos = mongoose.model("Pedido", PedidoSchema);
-
 export default Pedidos;

@@ -163,8 +163,12 @@ export const resolvers = {
       return vendedores;
     },
     buscarProducto: async (_, { texto }) => {
-      const producto = await Producto.find({ $text: { $search: texto } });
-      return producto;
+      // const productos = await Producto.find({ $text: { $search: texto } });
+      const productos = await Producto.find({
+        nombre: { $regex: new RegExp(texto) },
+      });
+
+      return productos;
     },
   },
   Mutation: {

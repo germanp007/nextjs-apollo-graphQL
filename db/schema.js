@@ -117,33 +117,29 @@ export const typeDefs = gql`
 
   type Query {
     # Usuarios
-
     obtenerUsuario(token: String!): Usuario
 
     # Productos
-
     obtenerProductos: [Producto]
     obtenerProducto(id: ID!): Producto
 
     # Clientes
-
     obtenerClientes: [Cliente]
     obtenerClienteVendedor: [Cliente]
     obtenerCliente(id: ID!): Cliente
 
     # Pedidos
-
     obtenerPedidos: [Pedido]
     obtenerPedidosVendedor: [Pedido]
     obtenerPedido(id: ID!): Pedido
     obtenerPedidosEstado(estado: String!): [Pedido]
 
     # Busquedas Avanzadas
-
     mejoresClientes: [TopClientes]
     mejoresVendedores: [TopVendedores]
-    buscarProducto: (texto:String!): [Producto]
+    buscarProducto(texto: String!): [Producto]
   }
+
   type Mutation {
     # Usuarios
     nuevoUsuario(input: UsuarioInput): Usuario
