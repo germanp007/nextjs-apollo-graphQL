@@ -181,7 +181,7 @@ export const resolvers = {
       const existeUsuario = await Usuario.findOne({ email });
 
       if (existeUsuario) {
-        throw new Error("Usuario ya existe");
+        throw new Error("El Usuario ya esta registrado");
       }
       // Hashear el password
 
