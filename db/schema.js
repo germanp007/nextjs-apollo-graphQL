@@ -76,7 +76,7 @@ export const typeDefs = gql`
     apellido: String!
     empresa: String!
     email: String!
-    telefono: String!
+    telefono: String
   }
 
   input AutenticarInput {
@@ -117,7 +117,7 @@ export const typeDefs = gql`
 
   type Query {
     # Usuarios
-    obtenerUsuario(token: String!): Usuario
+    obtenerUsuario: Usuario
 
     # Productos
     obtenerProductos: [Producto]

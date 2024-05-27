@@ -16,9 +16,8 @@ const crearToken = (usuario, secret, expiresIn) => {
 };
 export const resolvers = {
   Query: {
-    obtenerUsuario: async (_, { token }) => {
-      const usuarioId = await jwt.verify(token, process.env.SECRET_WORD);
-      return usuarioId;
+    obtenerUsuario: async (_, {}, ctx) => {
+      return ctx.usuario;
     },
     obtenerProductos: async () => {
       try {
@@ -45,6 +44,7 @@ export const resolvers = {
       }
     },
     obtenerClienteVendedor: async (_, {}, ctx) => {
+      console.log(ctx);
       try {
         const clientes = await Cliente.find({
           vendedor: ctx.usuario.id.toString(),
