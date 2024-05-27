@@ -259,18 +259,17 @@ export const resolvers = {
 
     // Clientes
     nuevoCliente: async (_, { input }, ctx) => {
-      //Verificar si el cliente ya esta registrado
-
       const { email } = input;
+      //Verificar si el cliente ya esta registrado
       const cliente = await Cliente.findOne({ email });
-      if (cliente) {
-        throw new Error("Usuario existente");
-      }
-      const nuevoCliente = new Cliente(input);
-      //Asignar el vendedor
-      nuevoCliente.vendedor = ctx.usuario.id;
 
       try {
+        if (cliente) {
+          throw new Error("Usuario existente");
+        }
+        const nuevoCliente = new Cliente(input);
+        //Asignar el vendedor
+        nuevoCliente.vendedor = ctx.usuario.id;
         // Guardar en la base de datos
         const result = await nuevoCliente.save();
         return result;
