@@ -207,7 +207,6 @@ export const resolvers = {
         if (!usuarioExiste) {
           throw new Error("El usuario no existe");
         }
-
         //revisar si el password es correcto
         const passwordCorrecto = await bcryptjs.compare(
           password,
@@ -221,7 +220,7 @@ export const resolvers = {
           token: crearToken(usuarioExiste, process.env.SECRET_WORD, "24h"),
         };
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
       }
     },
 
@@ -263,11 +262,11 @@ export const resolvers = {
       //Verificar si el cliente ya esta registrado
       const cliente = await Cliente.findOne({ email });
 
+      if (cliente) {
+        throw new Error("Cliente existente");
+      }
+      const nuevoCliente = new Cliente(input);
       try {
-        if (cliente) {
-          throw new Error("Usuario existente");
-        }
-        const nuevoCliente = new Cliente(input);
         //Asignar el vendedor
         nuevoCliente.vendedor = ctx.usuario.id;
         // Guardar en la base de datos
