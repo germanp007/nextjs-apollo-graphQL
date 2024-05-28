@@ -263,7 +263,7 @@ export const resolvers = {
       const cliente = await Cliente.findOne({ email });
 
       if (cliente) {
-        throw new Error("Cliente existente");
+        throw new Error("Ese Cliente ya se encuentra registrado");
       }
       const nuevoCliente = new Cliente(input);
       try {
@@ -296,7 +296,7 @@ export const resolvers = {
     },
     eliminarCliente: async (_, { id }, ctx) => {
       const cliente = await Cliente.findById(id);
-
+      console.log(cliente);
       if (cliente.vendedor.toString() !== ctx.usuario.id) {
         throw new Error("No tienes las credenciales para ejecutar esta accion");
       }
