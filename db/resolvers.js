@@ -44,7 +44,6 @@ export const resolvers = {
       }
     },
     obtenerClienteVendedor: async (_, {}, ctx) => {
-      console.log(ctx);
       try {
         const clientes = await Cliente.find({
           vendedor: ctx.usuario.id.toString(),
@@ -284,7 +283,6 @@ export const resolvers = {
       }
       // Verificar si el vendedor es quien edita
       // console.log(ctx.usuario.id);
-      console.log(cliente.vendedor.toString() === ctx.usuario.id);
       if (cliente.vendedor.toString() !== ctx.usuario.id) {
         throw new Error("No tienes las credenciales");
       }
@@ -295,11 +293,12 @@ export const resolvers = {
       return cliente;
     },
     eliminarCliente: async (_, { id }, ctx) => {
-      const cliente = await Cliente.findById(id);
+      let cliente = await Cliente.findById(id);
       console.log(cliente);
       if (cliente.vendedor.toString() !== ctx.usuario.id) {
         throw new Error("No tienes las credenciales para ejecutar esta accion");
       }
+      await Cliente.findOneAndDelete({ _id: id });
       return "Cliente Eliminado";
     },
     nuevoPedido: async (_, { input }, ctx) => {
