@@ -60,7 +60,7 @@ export const typeDefs = gql`
     id: ID
     pedido: [PedidoGroup]
     total: Float
-    cliente: ID
+    cliente: Cliente
     vendedor: ID
     fecha: String
     estado: EstadoPedido
